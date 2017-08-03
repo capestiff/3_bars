@@ -11,25 +11,15 @@ def load_data(filepath):
 
 
 def get_smallest_bar(json_data):
-    list_of_smallest_bars = []
-    smallest_bar = sorted(json_data, key=lambda key: key['SeatsCount'])[0]
+    smallest_bar_ = min(json_data, key=lambda key: key['SeatsCount'])
 
-    for bar_ in json_data:
-        if bar_['SeatsCount'] == smallest_bar['SeatsCount']:
-            list_of_smallest_bars.append(bar_)
-
-    return list_of_smallest_bars
+    return smallest_bar_
 
 
 def get_biggest_bar(json_data):
-    list_of_biggest_bars = []
-    biggest_bar = sorted(json_data, key=lambda key: key['SeatsCount'])[-1]
+    biggest_bar_ = max(json_data, key=lambda key: key['SeatsCount'])
 
-    for bar_ in json_data:
-        if bar_['SeatsCount'] == biggest_bar['SeatsCount']:
-            list_of_biggest_bars.append(bar_)
-
-    return list_of_biggest_bars
+    return biggest_bar_
 
 
 def get_closest_bar(bars_list_, longitude, latitude):
@@ -49,17 +39,15 @@ if __name__ == '__main__':
     longitude = float(input('Введите долготу: '))  # E.g.: 37.74
 
     bars_list = load_data(JSON_PATH)
-    biggest_bars_list = get_biggest_bar(bars_list)
-    smallest_bars_list = get_smallest_bar(bars_list)
+    biggest_bar = get_biggest_bar(bars_list)
+    smallest_bar = get_smallest_bar(bars_list)
     closest_bar = get_closest_bar(bars_list, longitude, latitude)
 
-    print('\nСамый большой бар'.upper(), '({})'.format(len(biggest_bars_list)))
-    for bar in biggest_bars_list:
-        print('    {}: {} мест'.format(bar['Name'], bar['SeatsCount']))
+    print('\nСамый большой бар'.upper())
+    print('    {}: {} мест'.format(biggest_bar['Name'], biggest_bar['SeatsCount']))
 
-    print('\nСамый маленький бар'.upper(), '({})'.format(len(smallest_bars_list)))
-    for bar in smallest_bars_list:
-        print('    {}: {} мест'.format(bar['Name'], bar['SeatsCount']))
+    print('\nСамый маленький бар'.upper())
+    print('    {}: {} мест'.format(smallest_bar['Name'], smallest_bar['SeatsCount']))
 
     print('\nСамый близкий бар'.upper())
     print('    {}, {}, {} ({:.2f} км)'.format(closest_bar['Name'],
