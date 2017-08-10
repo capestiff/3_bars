@@ -76,7 +76,7 @@ def is_longitude(str_input):
 def is_good_json(str_input):
     if not str_input:
         return False
-    elif Path(json_path).is_file() and json_path.lower().endswith('.json'):
+    elif Path(str_input).is_file() and str_input.lower().endswith('.json'):
         return True
     else:
         print('Проверьте правильность пути и имени файла')
