@@ -1,15 +1,7 @@
 import json
-import argparse
 import math
 from pathlib import Path
 from decimal import Decimal, DecimalException
-
-
-def parse_cli_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("путь к файлу", help='программа считывает JSON-файл с data.mos.ru с данными о барах')
-    args = parser.parse_args()
-    return args.path_to_file
 
 
 def load_data(filepath):
