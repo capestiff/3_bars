@@ -36,29 +36,20 @@ def get_closest_bar(bars_list_, longitude_, latitude_):
 
     for bar_ in bars_list_:
         bar_gps_coords = {'latitude': bar_['Latitude_WGS84'], 'longitude': bar_['Longitude_WGS84']}
-        bar_['Distance'] = get_distance_between_two_points_km(my_gps_coords, bar_gps_coords)
+        bar_['RelativeDistance'] = get_relative_distance_between_two_points_km(my_gps_coords, bar_gps_coords)
 
-    return sorted(bars_list_, key=lambda key: key['Distance'])[0]
+    return sorted(bars_list_, key=lambda key: key['RelativeDistance'])[0]
 
 
-def get_distance_between_two_points_km(first_point_gps_coords, second_point_gps_coords):
-    """
-    Calculate central angle between two points via the haversine formula.
-    More about at: https://en.wikipedia.org/wiki/Great-circle_distance
-    """
+def get_relative_distance_between_two_points_km(first_point_gps_coords, second_point_gps_coords):
+    x_1 = degrees_to_radians(first_point_gps_coords['latitude'])
+    y_1 = degrees_to_radians(first_point_gps_coords['longitude'])
+    x_2 = degrees_to_radians(second_point_gps_coords['latitude'])
+    y_2 = degrees_to_radians(second_point_gps_coords['longitude'])
 
-    phita_1 = degrees_to_radians(first_point_gps_coords['latitude'])
-    lambda_1 = degrees_to_radians(first_point_gps_coords['longitude'])
-    phita_2 = degrees_to_radians(second_point_gps_coords['latitude'])
-    lambda_2 = degrees_to_radians(second_point_gps_coords['longitude'])
-    earth_radius = 6372.795  # in km
+    relative_distance = (x_2 - x_1) ** 2 + (y_2 - y_1) ** 2
 
-    # haversine formula
-    central_angle = 2 * math.asin(math.sqrt(math.sin((phita_2 - phita_1)/2) ** 2 +
-                                            math.cos(phita_1) * math.cos(phita_2) *
-                                            math.sin((lambda_2 - lambda_1) / 2) ** 2))
-
-    return Decimal(earth_radius * central_angle)  # distance in km
+    return relative_distance
 
 
 def degrees_to_radians(degrees):
@@ -121,7 +112,4 @@ if __name__ == '__main__':
     print('    {}: {} мест'.format(smallest_bar['Name'], smallest_bar['SeatsCount']))
 
     print('\nСамый близкий бар'.upper())
-    print('    {}, {}, {} ({:.2f} км)'.format(closest_bar['Name'],
-                                              closest_bar['District'],
-                                              closest_bar['Address'],
-                                              closest_bar['Distance']))
+    print('    {}, {}, {}'.format(closest_bar['Name'], closest_bar['District'], closest_bar['Address']))
