@@ -1,5 +1,5 @@
 import json
-import math
+from math import sqrt
 from pathlib import Path
 from decimal import Decimal, DecimalException
 
@@ -25,27 +25,12 @@ def get_biggest_bar(json_data):
 
 def get_closest_bar(bars_list_, longitude_, latitude_):
     my_gps_coords = {'latitude': Decimal(latitude_), 'longitude': Decimal(longitude_)}
-
     for bar_ in bars_list_:
-        bar_gps_coords = {'latitude': bar_['Latitude_WGS84'], 'longitude': bar_['Longitude_WGS84']}
-        bar_['RelativeDistance'] = get_relative_distance_between_two_points_km(my_gps_coords, bar_gps_coords)
+        bar_gps_coords = {'latitude': Decimal(bar_['Latitude_WGS84']), 'longitude': Decimal(bar_['Longitude_WGS84'])}
+        bar_['RelativeDistance'] = sqrt((my_gps_coords['latitude'] - bar_gps_coords['latitude']) ** 2
+                                        + (my_gps_coords['longitude'] - bar_gps_coords['longitude']) ** 2)
 
-    return sorted(bars_list_, key=lambda key: key['RelativeDistance'])[0]
-
-
-def get_relative_distance_between_two_points_km(first_point_gps_coords, second_point_gps_coords):
-    x_1 = degrees_to_radians(first_point_gps_coords['latitude'])
-    y_1 = degrees_to_radians(first_point_gps_coords['longitude'])
-    x_2 = degrees_to_radians(second_point_gps_coords['latitude'])
-    y_2 = degrees_to_radians(second_point_gps_coords['longitude'])
-
-    relative_distance = (x_2 - x_1) ** 2 + (y_2 - y_1) ** 2
-
-    return relative_distance
-
-
-def degrees_to_radians(degrees):
-    return Decimal(degrees) * Decimal(math.pi) / 180
+    return min(bars_list_, key=lambda key: key['RelativeDistance'])
 
 
 def is_decimal(str_input):
